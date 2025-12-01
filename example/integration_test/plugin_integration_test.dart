@@ -1,11 +1,4 @@
-// This is a basic Flutter integration test.
-//
-// Since integration tests run in a full Flutter application, they can interact
-// with the host side of a plugin implementation, unlike Dart unit tests.
-//
-// For more information about Flutter integration tests, please see
-// https://flutter.dev/to/integration-testing
-
+import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
@@ -15,11 +8,26 @@ import 'package:age_range_signals/age_range_signals.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets('getPlatformVersion test', (WidgetTester tester) async {
-    final AgeRangeSignals plugin = AgeRangeSignals();
-    final String? version = await plugin.getPlatformVersion();
-    // The version string depends on the host platform running the test, so
-    // just assert that some non-empty string is returned.
-    expect(version?.isNotEmpty, true);
+  testWidgets('initialize completes successfully', (WidgetTester tester) async {
+    await expectLater(
+      AgeRangeSignals.instance.initialize(ageGates: [13, 16, 18]),
+      completes,
+    );
+  });
+
+  testWidgets('checkAgeSignals returns a result or throws exception',
+      (WidgetTester tester) async {
+    if (Platform.isIOS) {
+      await AgeRangeSignals.instance.initialize(ageGates: [13, 16, 18]);
+    }
+
+    try {
+      final result = await AgeRangeSignals.instance.checkAgeSignals();
+      expect(result, isA<AgeSignalsResult>());
+      expect(result.status, isNotNull);
+    } on AgeSignalsException catch (e) {
+      // On platforms where the API isn't available, we expect an exception
+      expect(e, isA<AgeSignalsException>());
+    }
   });
 }

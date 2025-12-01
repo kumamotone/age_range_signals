@@ -1,6 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'age_range_signals_method_channel.dart';
+import 'src/models/age_signals_result.dart';
 
 abstract class AgeRangeSignalsPlatform extends PlatformInterface {
   /// Constructs a AgeRangeSignalsPlatform.
@@ -23,7 +24,28 @@ abstract class AgeRangeSignalsPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  /// Initializes the plugin with platform-specific configuration.
+  ///
+  /// On iOS, [ageGates] specifies the age thresholds to use for age verification.
+  /// For example, [13, 16, 18] will allow the app to determine if the user is
+  /// under 13, between 13-15, between 16-17, or 18+.
+  ///
+  /// This parameter is ignored on Android.
+  ///
+  /// Should be called before [checkAgeSignals] on iOS.
+  Future<void> initialize({List<int>? ageGates}) {
+    throw UnimplementedError('initialize() has not been implemented.');
+  }
+
+  /// Checks the age signals for the current user.
+  ///
+  /// Returns an [AgeSignalsResult] containing the verification status and
+  /// any available age information.
+  ///
+  /// On iOS, you must call [initialize] with age gates before calling this method.
+  ///
+  /// Throws [AgeSignalsException] if an error occurs during the check.
+  Future<AgeSignalsResult> checkAgeSignals() {
+    throw UnimplementedError('checkAgeSignals() has not been implemented.');
   }
 }

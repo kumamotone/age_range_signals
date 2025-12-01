@@ -1,10 +1,12 @@
 name: age_range_signals
-description: "A new Flutter plugin project."
+description: Flutter plugin for age verification supporting Google Play Age Signals API (Android) and Apple's DeclaredAgeRange API (iOS 18+).
 version: 0.0.1
-homepage:
+homepage: https://github.com/zigapovhe/age_range_signals
+repository: https://github.com/zigapovhe/age_range_signals
+issue_tracker: https://github.com/zigapovhe/age_range_signals/issues
 
 environment:
-  sdk: ^3.10.1
+  sdk: '>=3.0.0 <4.0.0'
   flutter: '>=3.3.0'
 
 dependencies:
