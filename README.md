@@ -72,6 +72,7 @@ flutter pub get
 import 'package:age_range_signals/age_range_signals.dart';
 
 // Initialize the plugin (required for iOS, optional for Android)
+// Age gates represent your meaningful thresholds (e.g., child/teen/adult).
 await AgeRangeSignals.instance.initialize(ageGates: [13, 16, 18]);
 
 // Check age signals
@@ -142,6 +143,50 @@ Future<void> checkUserAge() async {
   } on AgeSignalsException catch (e) {
     // Handle errors appropriately
     print('Age verification error: ${e.message}');
+  }
+}
+```
+
+### 18+ Only App
+
+If your app is strictly 18+, set a single gate at 18 so the API classifies the user above/below that threshold.
+
+```dart
+// iOS only: one gate at 18
+await AgeRangeSignals.instance.initialize(ageGates: [18]);
+
+final result = await AgeRangeSignals.instance.checkAgeSignals();
+if (result.status == AgeSignalsStatus.verified) {
+  // User meets 18+ requirement
+} else {
+  // Block or show appropriate messaging
+}
+```
+
+### Generally Available App (No Age Restrictions)
+
+If your app serves all ages and does not gate content, you still need to provide age gates on iOS so the DeclaredAgeRange API can return a bucket. Use broad defaults and optionally log the result without changing your UX.
+
+```dart
+import 'dart:io';
+import 'package:age_range_signals/age_range_signals.dart';
+
+const defaultAgeGates = [13, 16, 18];
+
+Future<void> initAgeSignals() async {
+  if (Platform.isIOS) {
+    await AgeRangeSignals.instance.initialize(ageGates: defaultAgeGates);
+  }
+}
+
+Future<void> requestAgeSignals() async {
+  try {
+    final result = await AgeRangeSignals.instance.checkAgeSignals();
+    // Optional: log for compliance/analytics (without gating features)
+    print('Age signals status: ${result.status}');
+  } on AgeSignalsException catch (e) {
+    // Handle or log errors; do not block app usage
+    print('Age signals error: ${e.message}');
   }
 }
 ```
