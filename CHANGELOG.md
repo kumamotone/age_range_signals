@@ -1,3 +1,12 @@
+## 0.1.1
+
+* **Android**: Add `useMockData` parameter for testing
+* **iOS**: Fix critical `requestAgeRange` method call syntax
+* **iOS**: Add support for 1-3 age gates (previously 2-3)
+* **iOS**: Support for Swift Package Manager
+* Add pub.dev topics and formatted code for better score
+* Documentation improvements and usage examples
+
 ## 0.1.0
 
 * Initial release

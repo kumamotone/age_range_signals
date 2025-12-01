@@ -12,7 +12,8 @@ class MethodChannelAgeRangeSignals extends AgeRangeSignalsPlatform {
   final methodChannel = const MethodChannel('age_range_signals');
 
   @override
-  Future<void> initialize({List<int>? ageGates, bool useMockData = false}) async {
+  Future<void> initialize(
+      {List<int>? ageGates, bool useMockData = false}) async {
     try {
       await methodChannel.invokeMethod<void>('initialize', {
         'ageGates': ageGates,

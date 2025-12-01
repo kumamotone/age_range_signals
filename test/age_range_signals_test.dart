@@ -11,7 +11,8 @@ class MockAgeRangeSignalsPlatform
   List<int>? _ageGates;
 
   @override
-  Future<void> initialize({List<int>? ageGates, bool useMockData = false}) async {
+  Future<void> initialize(
+      {List<int>? ageGates, bool useMockData = false}) async {
     _initialized = true;
     _ageGates = ageGates;
   }
@@ -141,7 +142,8 @@ void main() {
   group('AgeSignalsException', () {
     test('formats message correctly with code', () {
       const exception = AgeSignalsException('Test message', 'TEST_CODE');
-      expect(exception.toString(), 'AgeSignalsException(TEST_CODE): Test message');
+      expect(
+          exception.toString(), 'AgeSignalsException(TEST_CODE): Test message');
     });
 
     test('formats message correctly without code', () {
