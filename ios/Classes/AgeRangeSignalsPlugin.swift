@@ -67,54 +67,97 @@ public class AgeRangeSignalsPlugin: NSObject, FlutterPlugin {
             return
         }
 
-        Task {
+        guard let presenter = presentationViewController() else {
+            result(FlutterError(
+                code: "PRESENTATION_CONTEXT_UNAVAILABLE",
+                message: "Unable to find a view controller to present age verification",
+                details: nil
+            ))
+            return
+        }
+
+        Task { @MainActor in
             do {
-                let response = try await requestAgeRange(ageGates: ageGates)
+                let response: AgeRangeService.Response
+
+                switch ageGates.count {
+                case 1:
+                    response = try await AgeRangeService.shared.requestAgeRange(
+                        ageGates: ageGates[0],
+                        in: presenter
+                    )
+                case 2:
+                    response = try await AgeRangeService.shared.requestAgeRange(
+                        ageGates: ageGates[0],
+                        ageGates[1],
+                        in: presenter
+                    )
+                case 3:
+                    response = try await AgeRangeService.shared.requestAgeRange(
+                        ageGates: ageGates[0],
+                        ageGates[1],
+                        ageGates[2],
+                        in: presenter
+                    )
+                default:
+                    result(FlutterError(
+                        code: "INVALID_AGE_GATES",
+                        message: "DeclaredAgeRange supports 1 to 3 age gates",
+                        details: nil
+                    ))
+                    return
+                }
 
                 switch response {
                 case .declinedSharing:
-                    await MainActor.run {
-                        result([
-                            "status": "declined",
-                            "ageLower": NSNull(),
-                            "ageUpper": NSNull(),
-                            "source": NSNull(),
-                            "installId": NSNull()
-                        ])
-                    }
+                    result([
+                        "status": "declined",
+                        "ageLower": NSNull(),
+                        "ageUpper": NSNull(),
+                        "source": NSNull(),
+                        "installId": NSNull()
+                    ])
 
                 case .sharing(let range):
-                    let source: String
+                    let source: String?
                     switch range.source {
                     case .selfDeclared:
                         source = "selfDeclared"
                     case .guardianDeclared:
                         source = "guardianDeclared"
-                    @unknown default:
-                        source = "selfDeclared"
+                    default:
+                        source = nil
                     }
 
+                    // Determine status based on highest configured age gate
                     let highestGate = ageGates.max() ?? 0
-                    let status = range.lowerBound >= highestGate ? "verified" : "supervised"
+                    let lowerBound = range.lowerBound ?? 0
 
-                    await MainActor.run {
-                        result([
-                            "status": status,
-                            "ageLower": range.lowerBound,
-                            "ageUpper": range.upperBound,
-                            "source": source,
-                            "installId": NSNull()
-                        ])
-                    }
-                }
-            } catch {
-                await MainActor.run {
+                    // User is verified if they meet or exceed the highest age gate
+                    // Otherwise supervised (may be under supervision or below threshold)
+                    let status = lowerBound >= highestGate ? "verified" : "supervised"
+
+                    result([
+                        "status": status,
+                        "ageLower": range.lowerBound as Any? ?? NSNull(),
+                        "ageUpper": range.upperBound as Any? ?? NSNull(),
+                        "source": source as Any? ?? NSNull(),
+                        "installId": NSNull()
+                    ])
+
+                @unknown default:
                     result(FlutterError(
                         code: "UNKNOWN_ERROR",
-                        message: error.localizedDescription,
+                        message: "Unknown DeclaredAgeRange response",
                         details: nil
                     ))
                 }
+            } catch {
+                result(FlutterError(
+                    code: "UNKNOWN_ERROR",
+                    message: error.localizedDescription,
+                    details: nil
+                ))
             }
         }
         #else
@@ -126,14 +169,27 @@ public class AgeRangeSignalsPlugin: NSObject, FlutterPlugin {
         #endif
     }
 
-    @available(iOS 26.0, *)
-    private func requestAgeRange(ageGates: [Int]) async throws -> DeclaredAgeRangeResponse {
-        #if canImport(DeclaredAgeRange)
-        return try await DeclaredAgeRange.requestAgeRange(ageGates: ageGates)
-        #else
-        throw NSError(domain: "AgeRangeSignals", code: -1, userInfo: [
-            NSLocalizedDescriptionKey: "DeclaredAgeRange not available"
-        ])
-        #endif
+    /// Finds a view controller suitable for presenting the age range prompt.
+    private func presentationViewController() -> UIViewController? {
+        if let scene = UIApplication.shared.connectedScenes
+            .compactMap({ $0 as? UIWindowScene })
+            .first(where: { $0.activationState == .foregroundActive }),
+           let root = scene.windows.first(where: { $0.isKeyWindow })?.rootViewController {
+            var top = root
+            while let presented = top.presentedViewController {
+                top = presented
+            }
+            return top
+        }
+
+        if let root = UIApplication.shared.keyWindow?.rootViewController {
+            var top = root
+            while let presented = top.presentedViewController {
+                top = presented
+            }
+            return top
+        }
+
+        return nil
     }
 }

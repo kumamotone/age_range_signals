@@ -2,6 +2,43 @@
 
 A Flutter plugin for age verification that supports Google Play Age Signals API (Android) and Apple's DeclaredAgeRange API (iOS 26+).
 
+## Table of Contents
+
+- [Features](#features)
+- [Platform Support](#platform-support)
+- [Installation](#installation)
+- [Platform Setup](#platform-setup)
+  - [Android](#android)
+  - [iOS](#ios)
+- [Usage](#usage)
+  - [Basic Example](#basic-example)
+  - [Complete Example](#complete-example)
+  - [18+ Only App](#18-only-app)
+  - [Generally Available App (No Age Restrictions)](#generally-available-app-no-age-restrictions)
+- [API Reference](#api-reference)
+  - [AgeRangeSignals](#agerangesignals)
+  - [AgeSignalsResult](#agesignalsresult)
+  - [AgeSignalsStatus](#agesignalsstatus)
+  - [AgeDeclarationSource](#agedeclarationsource)
+  - [Exceptions](#exceptions)
+- [Legal Compliance](#legal-compliance)
+  - [Important Usage Restrictions](#important-usage-restrictions)
+  - [Privacy Considerations](#privacy-considerations)
+- [Testing](#testing)
+  - [Android Testing](#android-testing)
+  - [iOS Testing](#ios-testing)
+- [Limitations](#limitations)
+  - [Android](#android-1)
+  - [iOS](#ios-1)
+- [Troubleshooting](#troubleshooting)
+  - [Android](#android-2)
+  - [iOS](#ios-2)
+- [Example App](#example-app)
+- [Contributing](#contributing)
+- [License](#license)
+- [References](#references)
+- [Support](#support)
+
 ## Features
 
 - ✅ Cross-platform support for Android and iOS
@@ -26,7 +63,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  age_range_signals: ^0.1.0
+  age_range_signals: ^0.1.1
 ```
 
 Then run:
@@ -62,7 +99,7 @@ flutter pub get
 
 2. Request the entitlement from Apple Developer Portal for your app identifier.
 
-**Important:** The DeclaredAgeRange API requires iOS 26.0+, but your app does NOT need to set its minimum deployment target to iOS 26.0. The plugin handles version checking at runtime and will throw an `UnsupportedPlatformException` on older iOS versions, allowing you to handle this gracefully in your app.
+**Important:** The DeclaredAgeRange API requires iOS 26.0+, but your app does NOT need to set its minimum deployment target to iOS 26.0. The plugin handles version checking at runtime and will throw an `UnsupportedPlatformException` on older iOS versions (or on SDKs without the API), allowing you to handle this gracefully in your app.
 
 ## Usage
 

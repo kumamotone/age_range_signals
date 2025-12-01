@@ -15,8 +15,9 @@ void main() {
     );
   });
 
-  testWidgets('checkAgeSignals returns a result or throws exception',
-      (WidgetTester tester) async {
+  testWidgets('checkAgeSignals returns a result or throws exception', (
+    WidgetTester tester,
+  ) async {
     if (Platform.isIOS) {
       await AgeRangeSignals.instance.initialize(ageGates: [13, 16, 18]);
     }

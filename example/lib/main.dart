@@ -15,10 +15,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Age Range Signals Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       home: const AgeSignalsDemo(),
     );
   }
@@ -105,10 +102,7 @@ class _AgeSignalsDemoState extends State<AgeSignalsDemo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Age Range Signals'),
-        elevation: 2,
-      ),
+      appBar: AppBar(title: const Text('Age Range Signals'), elevation: 2),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -148,8 +142,8 @@ class _AgeSignalsDemoState extends State<AgeSignalsDemo> {
               Text(
                 'Status: ${_isInitialized ? "Initialized" : "Not initialized"}',
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: _isInitialized ? Colors.green : Colors.orange,
-                    ),
+                  color: _isInitialized ? Colors.green : Colors.orange,
+                ),
               ),
             ],
             const SizedBox(height: 8),
@@ -160,9 +154,9 @@ class _AgeSignalsDemoState extends State<AgeSignalsDemo> {
                   ? 'Note: The Play Age Signals API will return mock data until January 1, 2026.'
                   : 'Note: DeclaredAgeRange requires iOS 26.0 or later. On older iOS versions, you will receive an UnsupportedPlatformException.',
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    fontStyle: FontStyle.italic,
-                    color: Colors.grey[600],
-                  ),
+                fontStyle: FontStyle.italic,
+                color: Colors.grey[600],
+              ),
             ),
           ],
         ),
@@ -205,17 +199,14 @@ class _AgeSignalsDemoState extends State<AgeSignalsDemo> {
                 Text(
                   'Error',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.red[700],
-                        fontWeight: FontWeight.bold,
-                      ),
+                    color: Colors.red[700],
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 12),
-            Text(
-              _error ?? '',
-              style: TextStyle(color: Colors.red[900]),
-            ),
+            Text(_error ?? '', style: TextStyle(color: Colors.red[900])),
           ],
         ),
       ),
@@ -237,9 +228,9 @@ class _AgeSignalsDemoState extends State<AgeSignalsDemo> {
                 Text(
                   'Result',
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Colors.green[700],
-                        fontWeight: FontWeight.bold,
-                      ),
+                    color: Colors.green[700],
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ],
             ),
@@ -272,9 +263,7 @@ class _AgeSignalsDemoState extends State<AgeSignalsDemo> {
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
-          Expanded(
-            child: Text(value),
-          ),
+          Expanded(child: Text(value)),
         ],
       ),
     );
